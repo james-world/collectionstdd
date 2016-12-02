@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace Collections
@@ -94,56 +92,16 @@ namespace Collections
         public void InvalidIndexShouldThrowOutOfRangeException()
         {
             // ReSharper disable once UnusedVariable
-            Assert.Throws<ArgumentOutOfRangeException>(() => { var _ = mruList[1]; });
-        }
-    }
-
-    public class MruList: IEnumerable<string>
-    {
-        private readonly List<string> list = new List<string>();
-        private readonly int capacity;
-
-        public int Count => list.Count;
-
-        public MruList()
-        {
-            capacity = int.MaxValue;
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => { var _ = mruList[1]; });
+            Assert.AreEqual("index", ex.ParamName);
         }
 
-        public MruList(int capacity)
+        [Test]
+        public void InvalidCapacityShouldThrowOutOfRangeException()
         {
-            this.capacity = capacity;
-        }
-
-        public IEnumerator<string> GetEnumerator()
-        {
-            return list.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public string this[int index] => list[index];
-
-        public void Add(string item)
-        {
-            if (string.IsNullOrEmpty(item))
-                throw new ArgumentException("Null or empty string", nameof(item));
-
-            if (capacity == 0)
-                return;
-
-            list.Remove(item);
-            EnsureCapacity();
-            list.Insert(0, item);
-        }
-
-        private void EnsureCapacity()
-        {
-            if (list.Count == capacity)
-                list.RemoveAt(capacity - 1);
+            // ReSharper disable once UnusedVariable
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => { var _ = new MruList(-1); });
+            Assert.AreEqual("capacity", ex.ParamName);
         }
     }
 }
